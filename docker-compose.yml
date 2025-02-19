@@ -3,14 +3,16 @@ version: '3.8'
 services:
   nordvpn:
     image: ghcr.io/bubuntux/nordvpn:latest
+    env_file:
+      - .env
     container_name: nordvpn
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun
     environment:
-      - TOKEN=your_nordvpn_token
-      - CONNECT=best
+      - TOKEN=${NORDVPN_TOKEN}
+      - CONNECT=${VPNCOUNTRY}
       - TECHNOLOGY=NordLynx
       - NETWORK=192.168.1.0/24
     restart: unless-stopped
@@ -37,7 +39,7 @@ services:
     restart: unless-stopped
 
   jellyfin:
-    image: jellyfin/jellyfin:latest
+    image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     network_mode: "bridge"
     volumes:
