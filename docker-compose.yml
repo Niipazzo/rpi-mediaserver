@@ -11,8 +11,8 @@ services:
     devices:
       - /dev/net/tun
     environment:
-      - TOKEN=${NORDVPN_TOKEN}
-      - CONNECT=${VPNCOUNTRY}
+      - TOKEN=${NORDVPN_TOKEN:-EMPTY}
+      - CONNECT=${VPNCOUNTRY:-UKRAINE}
       - TECHNOLOGY=NordLynx
       - NETWORK=192.168.1.0/24
     restart: unless-stopped
@@ -34,8 +34,8 @@ services:
       - TZ=Europe/Lisbon
       - WEBUI_PORT=8080
     volumes:
-      - ./qbittorrent/config:/config
-      - ./qbittorrent/downloads:/downloads
+      - ~/qbittorrent/config:/config
+      - ~/qbittorrent/downloads:/downloads
     restart: unless-stopped
 
   jellyfin:
@@ -43,9 +43,9 @@ services:
     container_name: jellyfin
     network_mode: "bridge"
     volumes:
-      - ./jellyfin/config:/config
-      - ./jellyfin/cache:/cache
-      - ./media:/media
+      - ~/jellyfin/config:/config
+      - ~/jellyfin/cache:/cache
+      - /mnt/mediahdd:/media
     environment:
       - PUID=1000
       - PGID=1000
