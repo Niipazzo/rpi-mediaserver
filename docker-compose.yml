@@ -8,16 +8,17 @@ services:
     container_name: nordvpn
     cap_add:
       - NET_ADMIN
-    devices:
-      - /dev/net/tun
+      - NET_RAW
     environment:
       - TOKEN=${NORDVPN_TOKEN:-EMPTY}
       - CONNECT=${VPNCOUNTRY:-UKRAINE}
       - TECHNOLOGY=NordLynx
       - NETWORK=192.168.1.0/24
     restart: unless-stopped
-    networks:
-      - vpn_network
+    ports:
+      - 8080:8080
+#    sysctls:
+#      - net.ipv6.conf.all.disable_ipv6=1
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:arm64v8-latest
@@ -25,6 +26,8 @@ services:
     depends_on:
       - nordvpn
     network_mode: "service:nordvpn"
+#    ports:
+#      - 8080:8080
     environment:
       - PUID=1000
       - PGID=1000
@@ -51,6 +54,3 @@ services:
       - 8096:8096
     restart: unless-stopped
 
-networks:
-  vpn_network:
-    driver: bridge
