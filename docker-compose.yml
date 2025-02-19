@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  nordvpn:
+    image: ghcr.io/bubuntux/nordvpn:latest
+    container_name: nordvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - TOKEN=your_nordvpn_token
+      - CONNECT=best
+      - TECHNOLOGY=NordLynx
+      - NETWORK=192.168.1.0/24
+    restart: unless-stopped
+    ports:
+      - 8080:8080  # qBittorrent Web UI
+      - 8096:8096  # Jellyfin Web UI
+    networks:
+      - vpn_network
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:arm64v8-latest
+    container_name: qbittorrent
+    depends_on:
+      - nordvpn
+    network_mode: "service:nordvpn"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Lisbon
+      - WEBUI_PORT=8080
+    volumes:
+      - ./qbittorrent/config:/config
+      - ./qbittorrent/downloads:/downloads
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    network_mode: "bridge"
+    volumes:
+      - ./jellyfin/config:/config
+      - ./jellyfin/cache:/cache
+      - ./media:/media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Lisbon
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+
+networks:
+  vpn_network:
+    driver: bridge
