@@ -1,33 +1,34 @@
 name: media-server
 
 services:
-  nordvpn:
-    image: ghcr.io/bubuntux/nordvpn:latest
+  nordlynx:
+    image: ghcr.io/bubuntux/nordlynx
     env_file:
       - .env
-    container_name: nordvpn
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    environment:
-      - TOKEN=${NORDVPN_TOKEN:-EMPTY}
-      - CONNECT=${VPNCOUNTRY:-UKRAINE}
-      - TECHNOLOGY=NordLynx
-      - NETWORK=192.168.1.0/24
-    #restart: unless-stopped
+    hostname: nordlynx
+    container_name: nordlynx
     ports:
       - 8080:8080
+    cap_add:
+      - NET_ADMIN
+#        - SYS_MODULE
+    environment:
+      - PRIVATE_KEY=${NORDVPN_TOKEN:-EMPTY}
+      - CONNECT=${VPNCOUNTRY:-UKRAINE}
+#      - NET_LOCAL=192.168.0.0/16
+      - TZ=Europe/Lisbon
 #    sysctls:
-#      - net.ipv6.conf.all.disable_ipv6=1
+#      - net.ipv4.conf.all.src_valid_mark=1   # maybe
+#      - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
+#      - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
+  restart: unless-stopped
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:arm64v8-latest
     container_name: qbittorrent
     depends_on:
-      - nordvpn
-    network_mode: "service:nordvpn"
-#    ports:
-#      - 8080:8080
+      - nordlynx
+    network_mode: service:nordlynx
     environment:
       - PUID=1000
       - PGID=1000
@@ -36,7 +37,7 @@ services:
     volumes:
       - ~/qbittorrent/config:/config
       - ~/qbittorrent/downloads:/downloads
-    #restart: unless-stopped
+#    restart: unless-stopped
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -52,5 +53,5 @@ services:
       - TZ=Europe/Lisbon
     ports:
       - 8096:8096
-    #restart: unless-stopped
+#    restart: unless-stopped
 
