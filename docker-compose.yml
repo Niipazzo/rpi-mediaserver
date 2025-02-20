@@ -7,8 +7,9 @@ services:
       - .env
     hostname: nordlynx
     container_name: nordlynx
+    network_mode: "host"
     ports:
-      - 8080:8080
+      - 8095:8095
     cap_add:
       - NET_ADMIN
 #        - SYS_MODULE
@@ -33,7 +34,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Lisbon
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=8095
     volumes:
       - ~/qbittorrent/config:/config
       - ~/qbittorrent/downloads:/downloads
