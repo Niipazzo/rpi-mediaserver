@@ -13,8 +13,8 @@ services:
       - NET_ADMIN
 #        - SYS_MODULE
     environment:
-      - PRIVATE_KEY=${NORDVPN_TOKEN:-EMPTY}
-      - CONNECT=${VPNCOUNTRY:-UKRAINE}
+      - PRIVATE_KEY=${NORDVPN_PRIVATE_KEY:-EMPTY}
+      - COUNTRY_CODE=${COUNTRY_CODE:-UA}
 #      - NET_LOCAL=192.168.0.0/16
       - TZ=Europe/Lisbon
 #    sysctls:
