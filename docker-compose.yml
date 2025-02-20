@@ -7,7 +7,6 @@ services:
       - .env
     hostname: nordlynx
     container_name: nordlynx
-    network_mode: "host"
     ports:
       - 8095:8095
     cap_add:
@@ -16,12 +15,12 @@ services:
     environment:
       - PRIVATE_KEY=${NORDVPN_PRIVATE_KEY:-EMPTY}
       - COUNTRY_CODE=${COUNTRY_CODE:-UA}
-#      - NET_LOCAL=192.168.0.0/16
+      - NET_LOCAL=192.168.0.0/16
       - TZ=Europe/Lisbon
-#    sysctls:
+    sysctls:
 #      - net.ipv4.conf.all.src_valid_mark=1   # maybe
 #      - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
-#      - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
+      - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
 #    restart: unless-stopped
 
   qbittorrent:
