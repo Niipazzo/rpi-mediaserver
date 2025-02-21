@@ -37,7 +37,7 @@ services:
     volumes:
       - ~/qbittorrent/config:/config
       - ~/qbittorrent/downloads:/downloads
-      - /mnt/mediahdd:/mnt/mediahdd
+      - /mnt/mediahdd:/media
     restart: unless-stopped
 
   jellyfin:
